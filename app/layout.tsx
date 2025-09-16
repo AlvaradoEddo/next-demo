@@ -8,7 +8,6 @@ const workSans = localFont({
     path: './fonts/WorkSans-Black.ttf',
     weight: '900',
     style: 'normal',
-
   },
   {
     path: './fonts/WorkSans-ExtraBold.ttf',
