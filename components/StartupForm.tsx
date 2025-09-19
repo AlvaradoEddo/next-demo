@@ -10,13 +10,15 @@ import { Send } from "lucide-react";
 import { formSchema } from "@/lib/validation";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { createPitch } from "@/lib/action";
 
 const StartupForm = () => {
 
     const [errors, setErrors] = useState<Record<string, string>>({});
 
     const [ pitch, setPitch ] = useState<string>("");
-    
+    const router = useRouter();
     
     const handleFormSubmit = async (prevState: any, formData: FormData) => {
         try{
@@ -29,19 +31,27 @@ const StartupForm = () => {
             }
 
             await formSchema.parseAsync(formValues);
-            console.log(formValues);
+            
 
-            //const result = await createIdea(prevState, formData, pitch);
+            const result = await createPitch(prevState, formData, pitch);
 
-            // console.log(result);
+            if(result.status === "SUCCESS"){
+                toast.success("Startup subida con éxito");
+            }
+
+            router.push(`/startup/${result._id}`);
+
+            return result
         }catch (error) {
             if(error instanceof z.ZodError){
                 const fieldErrors = error.flatten().fieldErrors;
                 setErrors(fieldErrors as unknown as Record<string, string>);
 
+                toast.error("Por favor corrige los errores en el formulario");
                 
                 return { ...prevState, error: "Error de validación", status: "ERROR" };
             }
+            toast.error("Error desconocido, intenta de nuevo");
             return { ...prevState, error: "Error desconocido", status: "ERROR" };
         }finally {
 

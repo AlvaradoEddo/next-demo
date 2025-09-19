@@ -20,7 +20,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           username: login,
           email,
           image,
-          bio: bio || "No bio"
+          bio: bio || ""
         });
 
         
